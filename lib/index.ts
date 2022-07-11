@@ -1,8 +1,7 @@
-import { Crawler } from "./services/crawler";
+#!/usr/bin/env node
 
-const manga = new Crawler();
+import { CLI } from "./cli";
 
-const url =
-  "https://mangareader.to/read/shikimoris-not-just-a-cutie-1358/en/chapter-2";
+const cli = new CLI();
 
-manga.crawl(url);
+cli.run();

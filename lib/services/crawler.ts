@@ -3,6 +3,7 @@ import {
   MANGAREADER_SITE_SETTINGS,
 } from "../utils/config";
 import { generateTempDirectory, convertFolderToPDF } from "../utils/utils";
+import { Message } from "./message";
 import puppeteer from "puppeteer";
 import path from "path";
 import he from "he";
@@ -10,7 +11,13 @@ import os from "os";
 
 // mangareader.to web-crawler module
 export class Crawler {
+  message: Message;
+  outputDir: string = path.join(os.homedir(), "Desktop");
   baseUrl: string = "https://mangareader.to";
+
+  constructor(message: Message) {
+    this.message = message;
+  }
 
   private validateURL(site: string): boolean {
     const url = new URL(site);
@@ -43,7 +50,7 @@ export class Crawler {
     );
   }
 
-  crawl(site: any) {
+  crawl(site: string, outputDir?: string) {
     const isValid = this.validateURL(site);
 
     if (!isValid) {
@@ -52,7 +59,13 @@ export class Crawler {
       );
     }
 
+    if (outputDir) {
+      this.outputDir = outputDir;
+    }
+
     (async () => {
+      this.message.emit("spin", 1);
+
       const browser = await puppeteer.launch(BROWSER_LAUNCH_SETTINGS);
 
       const browserPage = await browser.newPage();
@@ -70,11 +83,15 @@ export class Crawler {
 
       await this.crawlInternal(browserPage);
 
+      this.message.emit("spin", 5);
+
       browser.close();
     })();
   }
 
   async crawlInternal(browserPage: puppeteer.Page) {
+    this.message.emit("spin", 2);
+
     const siteData = await browserPage.evaluate(() => {
       const chapter = document.querySelector(".container-reader-chapter");
       const payload = document.querySelector("#syncData");
@@ -92,6 +109,8 @@ export class Crawler {
     await this.deleteHTMLParentNode(browserPage, ["#header"]);
 
     await this.scrollToBottom(browserPage);
+
+    this.message.emit("spin", 3);
 
     await this.screenshotPages(browserPage, siteData);
   }
@@ -121,7 +140,9 @@ export class Crawler {
       }
     }
 
-    convertFolderToPDF(folderDir, path.join(os.homedir(), "Desktop", filename));
+    this.message.emit("spin", 4);
+
+    convertFolderToPDF(folderDir, path.join(this.outputDir, filename));
   }
 
   async scrollToBottom(browserPage: puppeteer.Page) {
