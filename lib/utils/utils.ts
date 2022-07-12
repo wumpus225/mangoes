@@ -22,7 +22,9 @@ export function convertFolderToPDF(folder: string, outputPath: string): void {
   let document = new PDFDocument();
 
   fs.readdir(folder, (_, files) => {
-    files.forEach((file) => {
+    const sorted = naturalIntegerSort(files);
+
+    sorted.forEach((file) => {
       const filePath = `${folder}/${file}`;
       try {
         const size = imageSize(filePath);
@@ -41,4 +43,13 @@ export function convertFolderToPDF(folder: string, outputPath: string): void {
     document.pipe(fs.createWriteStream(outputPath));
     document.end();
   });
+}
+
+function naturalIntegerSort(array: string[]) {
+  const { compare } = new Intl.Collator(undefined, {
+    numeric: true,
+    sensitivity: "base",
+  });
+
+  return array.sort(compare);
 }
