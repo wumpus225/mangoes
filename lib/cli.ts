@@ -8,7 +8,7 @@ export class CLI {
     program
       .name("mango")
       .description("A fruity and accessible manga downloader")
-      .version("0.0.1, '-v, --vers', 'output the current version'");
+      .version("0.0.1", "-v, --vers", "output the current version");
 
     program
       .option("-i, --interactive", "use this cli to interactive mode")
