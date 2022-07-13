@@ -1,17 +1,36 @@
 {
-  "name": "mango",
+  "name": "mangoes",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "🥭 mango is a minimal, fruity, open source command line for downloading your favorite mangas! ",
+  "main": "./build/index.js",
+  "files": [
+    "build"
+  ],
   "scripts": {
     "build": "rimraf ./build && tsc",
     "watch": "tsc --watch",
     "start": "node build/index.js",
     "dev": "nodemon build/index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "bin": {
+    "mangoes": "build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yakemichi/mango"
+  },
+  "bugs": {
+    "url": "https://github.com/yakemichi/mango/issues"
+  },
+  "homepage": "https://github.com/yakemichi/mango#readme",
+  "keywords": [
+    "cli",
+    "downloader",
+    "manga",
+    "anime"
+  ],
+  "author": "Tyo Nirwansyah",
+  "license": "MIT",
   "devDependencies": {
     "@types/fs-extra": "^9.0.13",
     "@types/he": "^1.1.2",
